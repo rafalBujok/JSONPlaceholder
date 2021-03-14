@@ -1,0 +1,64 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12"><button mat-button (click)="goToPostList()">Posts List</button></div>
+    </div>
+
+    <div class="row my-3" *ngIf="post && post.id === postId" style="cursor: default;">
+        <div class="col-xs-12" class="title">{{post.title}}</div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 my-1" class="content"> {{post.body}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="row my-3" *ngFor="let comment of commentList" style="cursor: default;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sx-12" class="author">{{comment.email}}</div>
+            </div>
+            <div class="row">
+                <div class="col-sx-12" class="title">{{comment.name}}</div>
+            </div>
+            <div class="row">
+                <div class="col-sx-12" class="content">{{comment.body}}</div>
+            </div>
+        </div>
+    </div>
+    <form [formGroup]="commentForm">
+
+        <div>
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput required formControlName="name" placeholder="Name">
+                <mat-error *ngIf="commentForm.get('name').invalid">
+                    Field Required
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div>
+            <mat-form-field>
+                <mat-label>E-mail</mat-label>
+                <input matInput required formControlName="email" placeholder="E-mail">
+                <mat-error *ngIf="commentForm.get('email').hasError('required')">
+                    Field Required
+                </mat-error>
+                <mat-error *ngIf="commentForm.get('email').invalid && commentForm.get('email').dirty && commentForm.get('email').value">
+                    Email form Required
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field class="commentForm">
+                <mat-label>Leave a comment</mat-label>
+                <textarea matInput required formControlName="body" placeholder="Comment"></textarea>
+                <mat-error *ngIf="commentForm.get('body').hasError('required')">
+                    Field Required
+                </mat-error>
+
+            </mat-form-field>
+        </div>
+        <button mat-button class="m-3 " mat-stroked-button type="submit" (click)="onSubmit(commentForm.value)" [disabled]="commentForm.invalid">Post Comment</button>
+
+    </form>
+</div>

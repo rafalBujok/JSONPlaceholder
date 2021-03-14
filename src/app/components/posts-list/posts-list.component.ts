@@ -1,10 +1,12 @@
+
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import Post from 'src/app/models/post.model';
-import PostState from 'src/app/states/post.state';
-import * as PostActions from '../../actions/post.action';
+import Post from 'src/app/posts/post.model';
+import PostState, { getPostsState } from 'src/app/posts/post.state';
+import * as PostActions from '../../posts/post.action';
 
 
 
@@ -14,8 +16,8 @@ import * as PostActions from '../../actions/post.action';
   styleUrls: ['./posts-list.component.scss']
 })
 export class PostsListComponent implements OnInit {
-  constructor(private store: Store<{ posts: PostState }>) {
-    this.post$ = store.pipe(select('posts'));
+  constructor(private store: Store<{ Posts: PostState }>, private router: Router) {
+    this.post$ = store.pipe(select(getPostsState));
   }
   post$: Observable<PostState>;
   postSubscription: Subscription;
@@ -23,6 +25,7 @@ export class PostsListComponent implements OnInit {
 
   postError: Error = null;
   ngOnInit() {
+
     this.postSubscription = this.post$
       .pipe(
         map(x => {
@@ -32,10 +35,12 @@ export class PostsListComponent implements OnInit {
       )
       .subscribe();
 
-    this.store.dispatch(PostActions.BeginGetPostAction());
+    this.store.dispatch(PostActions.BeginGetPostsAction());
 
   }
-
+  goTo(item: Post) {
+    this.router.navigate(['/p/' + item.id])
+  }
   ngOnDestroy() {
     if (this.postSubscription) {
       this.postSubscription.unsubscribe();
